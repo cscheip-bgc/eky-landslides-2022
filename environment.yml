@@ -1,0 +1,26 @@
+name: landslide-figures
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - pandas
+  - scipy
+  - xarray
+  - geopandas
+  - rasterio
+  - rioxarray
+  - shapely
+  - fiona
+  - pyproj
+  - rasterstats
+  - contextily
+  - matplotlib
+  - seaborn
+  - tqdm
+  - joblib
+  - scikit-learn
+  - pip
+  - pip:
+      - great-tables
+
