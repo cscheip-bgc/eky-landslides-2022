@@ -1,8 +1,16 @@
 # Data Directory
 
-This directory should contain the raw input data files required for the analysis.
+This directory contains some raw input data files required for the analysis. Additional large data files need to be downloaded separately.
 
-## Required Files
+## Files Included in Repository
+
+The following file is included in the repository:
+
+- **`eky-gauge-data.csv`** - Daily precipitation data from eastern Kentucky gauges (Buckhorn, Jackson, Oneida, Whitesburg)
+  - Source: [National Weather Service [NWS] NOWData—NOAA online weather data: Jackson, KY (WFO JKL)](https://www.weather.gov/wrh/Climate?wfo=jkl) (Accessed July 7, 2025)
+  - This file is small enough to be version controlled
+
+## Required Files to Download
 
 Place the following files in this directory before running the analysis scripts:
 
@@ -25,7 +33,7 @@ Place the following files in this directory before running the analysis scripts:
 4. **`aspect.tif`**
    - DEM-derived aspect raster
    - Source: [Kentucky from Above](https://kyfromabove.ky.gov)
-   - Navigate to the study area and download the aspect raster derived from the base lidar DEM
+   - Navigate to the study area and download the elevation raster to produce a D8 aspect raster.
    
 5. **`lcd_baseline.tif`**
    - Landslide change-detection (LCD) baseline raster
@@ -58,6 +66,13 @@ Base lidar data and derived products (aspect, slope, etc.) are available from th
 
 Navigate to the study area in eastern Kentucky and download the aspect raster. The study area is centered approximately at coordinates 37.4°N, 83.5°W.
 
+### National Weather Service (NWS)
+Daily precipitation data from weather stations in eastern Kentucky is available from the NWS Climate Data portal.
+
+**Portal:** https://www.weather.gov/wrh/Climate?wfo=jkl
+
+The precipitation data includes daily measurements from gauges at Buckhorn, Jackson, Oneida, and Whitesburg.
+
 ## File Naming
 
 If your data files have different names, you can either:
@@ -70,23 +85,26 @@ All data should be in or will be reprojected to **EPSG:32617** (WGS 84 / UTM Zon
 
 ## Data Not Included
 
-This directory is intentionally empty in the repository. Users must download the data from the sources listed above. The data files are not included due to:
-- File size constraints
+Most data files are not included in the repository. Users must download the spatial data (shapefiles and rasters) from the sources listed above. These large data files are not included due to:
+- File size constraints (rasters can be several GB)
 - Ongoing data publication process
 - Licensing considerations
 
+The precipitation CSV (`eky-gauge-data.csv`) is small (90KB) and is included in the repository for convenience.
+
 ## Verification
 
-After downloading, verify you have all required files:
+After downloading the required files, verify you have everything:
 
 ```bash
 ls -1 data/
 ```
 
-Expected output:
+Expected output (note that `eky-gauge-data.csv` and `README.md` are already included in the repository):
 ```
 aspect.tif
 dod_aligned.tif
+eky-gauge-data.csv          # included in repo
 event_inventory_2022.dbf
 event_inventory_2022.prj
 event_inventory_2022.shp
@@ -100,7 +118,7 @@ mapping_area.dbf
 mapping_area.prj
 mapping_area.shp
 mapping_area.shx
-README.md
+README.md                   # included in repo
 ```
 
 ## Questions?

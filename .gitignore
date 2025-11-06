@@ -3,9 +3,19 @@ __pycache__/
 *.py[cod]
 *.pyc
 
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
 # Data and outputs
 data/*
+!data/README.md
+!data/eky-gauge-data.csv
 outputs/*
 
 # macOS
 .DS_Store
+
+# configs
+config_test.py
+config_local.py

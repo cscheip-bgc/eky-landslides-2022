@@ -14,6 +14,7 @@ This codebase generates figures and tables used in the manuscript from raw raste
 - Area-volume scaling relationships from lidar change detection
 - Reactivation distance analysis
 - Cumulative erosion analysis
+- Precipitation analysis and rolling sum plots
 
 ## Requirements
 
@@ -28,7 +29,9 @@ conda activate landslide-figures
 
 ### Data Requirements
 
-Download the following datasets and place them in the `data/` subdirectory:
+The precipitation data (`eky-gauge-data.csv`) is included in the repository in the `data/` subdirectory.
+
+Download the following additional datasets and place them in the `data/` subdirectory:
 
 | Filename | Description | Source |
 |----------|-------------|--------|
@@ -65,6 +68,9 @@ python src/area_volume.py
 
 # 5. Reactivation distance analysis
 python src/reactivation_distance.py
+
+# 6. Precipitation analysis and plotting
+python src/precip_plotting.py
 ```
 
 ### Expected Outputs
@@ -93,6 +99,10 @@ After running all scripts, the `outputs/figures/` directory will contain:
 - `cumulative_distance_curve_with_size.pdf` - Reactivation distance curve
 - `reactivation_cumulative.csv` - Cumulative reactivation statistics
 
+**Precipitation Analysis:**
+- `Month_AverageFullSpan.png` - 30-day rolling sum precipitation (full time span)
+- `FourDay_GaugeInset.png` - 4-day rolling sum precipitation (June-August 2022)
+
 ## Analysis Parameters
 
 Key parameters are defined in `config.py`:
@@ -119,7 +129,8 @@ release-artifacts/
     ├── aspect_frequency.py # Aspect analysis and frequency ratios
     ├── fad.py            # Frequency-area distributions
     ├── area_volume.py    # Volume calculations and scaling
-    └── reactivation_distance.py # Reactivation analysis
+    ├── reactivation_distance.py # Reactivation analysis
+    └── precip_plotting.py # Precipitation analysis and plotting
 ```
 
 ## Notes
