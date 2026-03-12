@@ -14,13 +14,8 @@ dependencies:
   - fiona
   - pyproj
   - rasterstats
-  - contextily
   - matplotlib
   - seaborn
   - tqdm
-  - joblib
-  - scikit-learn
   - pip
-  - pip:
-      - great-tables
 

@@ -23,17 +23,20 @@ figure_path = output_path / "figures"
 figure_path.mkdir(parents=True, exist_ok=True)
 
 # Inventory + study boundary inputs ---------------------------------------------
-inv_2022_path = data_path / "event_inventory_2022.shp"
-inv_historical_path = data_path / "historical_inventory.shp"
+inv_2022_path = data_path / "event-inventory.shp"
+inv_historical_path = data_path / "historical-inventory.shp"
 
-mapping_area_file = data_path / "mapping_area.shp"
+mapping_area_file = data_path / "mapping-area.shp"
 
 # Terrain rasters ----------------------------------------------------------------
 aspect_file = data_path / "aspect.tif"
 
 # LCD/DoD rasters ----------------------------------------------------------------
-lcd_file = data_path / "M3C2_ICP_2017_vs_2023.tif"
-dod_aligned_file = data_path / "DoD_ICP_2023_minus_2017.tif"
+lcd_file = data_path / "m3c2_lcd.tif"
+dod_aligned_file = data_path / "dod_aligned.tif"
+
+# Precomputed erosion volumes (from raster extraction) -------------------------
+erosion_volumes_csv = data_path / "landslide_erosion_volumes.csv"
 
 
 # Analysis parameters ------------------------------------------------------------
@@ -42,9 +45,9 @@ kde_method = "scott"
 
 n_bins = 50
 
-AREA_MIN = 150
+AREA_MIN = 151
 AREA_MAX = 10000
 
-EROSION_AREA_MIN = 150
+EROSION_AREA_MIN = 151
 EROSION_AREA_MAX = 4000
 

@@ -1,6 +1,6 @@
-# Reconsidering the magnitude of convective storms in triggering landslide events in the Appalachian Plateau, USA
+# Reconsidering the magnitude of convective storm-triggered landslide events in the Appalachian Plateau, USA
 
-**Supporting code for the manuscript submitted to _Geophysical Research Letters_ by Scheip et al.**
+**Supporting code for the manuscript submitted to _Journal of Geophysical Research: Earth Surface_ by Scheip et al.**
 
 This repository contains the code to reproduce figures and tables for the above-mentioned manuscript to support open research standards.
 
@@ -29,18 +29,18 @@ conda activate landslide-figures
 
 ### Data Requirements
 
-The precipitation data (`eky-gauge-data.csv`) is included in the repository in the `data/` subdirectory.
-
 Download the following additional datasets and place them in the `data/` subdirectory:
 
 | Filename | Description | Source |
 |----------|-------------|--------|
-| `event_inventory_2022.shp` | 2022 event landslide inventory (vector) | [OSF Project](https://osf.io/tuvqw/overview?view_only=79501ea561984e198188d3cf4dd7f1c7) |
-| `historical_inventory.shp` | Historical landslide inventory (vector) | [OSF Project](https://osf.io/tuvqw/overview?view_only=79501ea561984e198188d3cf4dd7f1c7) |
-| `mapping_area.shp` | Study/mapping area boundary polygon | [Zenodo Record](https://zenodo.org/uploads/16813914) |
+| `event-inventory.shp` | 2022 event landslide inventory (vector) | [OSF Project](https://osf.io/tuvqw/overview?view_only=79501ea561984e198188d3cf4dd7f1c7) |
+| `historical-inventory.shp` | Historical landslide inventory (vector) | [OSF Project](https://osf.io/tuvqw/overview?view_only=79501ea561984e198188d3cf4dd7f1c7) |
+| `mapping-area.shp` | Study/mapping area boundary polygon | [Zenodo Record](https://zenodo.org/uploads/16813914) |
 | `aspect.tif` | DEM-derived aspect raster | [Kentucky from Above](https://kyfromabove.ky.gov) |
-| `M3C2_ICP_2017_vs_2023.tif` | Change-detection raster | [Zenodo Record](https://zenodo.org/uploads/16813914) |
-| `DoD_ICP_2023_minus_2017.tif` | Aligned DEM-of-difference raster | [Zenodo Record](https://zenodo.org/uploads/16813914) |
+| `m3c2_lcd.tif` | Lidar change detection (LCD) raster (M3C2, Surface-Normal) | [Zenodo Record](https://zenodo.org/uploads/16813914) |
+| `dod_aligned.tif` | Aligned DEM-of-difference raster | [Zenodo Record](https://zenodo.org/uploads/16813914) |
+| `landslide_erosion_volumes.csv` | Precomputed M3C2 and DoD erosion volumes with mean slope per landslide | Included in repository |
+| `eky-gauge-data.csv` | Precipitation data for four gauges near mapping area | Included in repository |
 
 ## Configuration
 
@@ -88,12 +88,12 @@ After running all scripts, the `outputs/figures/` directory will contain:
 - `aspect_frequency_*.csv` - Frequency tables
 
 **Frequency-Area Distribution:**
-- `fad_2022_vs_historical.pdf` - FAD comparison with inverse gamma fits
+- `fad_2022_vs_historical.pdf` - FAD comparison with inverse gamma fits and mapping deficit detail
 
 **Area-Volume Analysis:**
-- `area_volume_scaling.pdf` - Area vs. volume scatter with power law fit
-- `area_volume_table.csv` - Volume statistics table
+- `area_volume_scaling_dod.pdf` - Area vs. volume scatter with power law fit
 - `cumulative_erosion_semilog_fit.pdf` - Cumulative erosion curve
+- `dod_vs_m3c2_comparison.pdf` - DoD vs M3C2 erosion volume scatter comparison
 
 **Reactivation Analysis:**
 - `cumulative_distance_curve_with_size.pdf` - Reactivation distance curve
@@ -145,7 +145,7 @@ release-artifacts/
 If you use this code, please cite:
 
 ```
-Scheip, C., Crawford, M., Koch, H., Bibbins, E., (2025). Reconsidering the magnitude of convective storms in triggering landslide events in the Appalachian Plateau, USA. Geophysical Research Letters. [Submitted]
+Scheip, C., Crawford, M., Koch, H., Bibbins, E., (2025). RReconsidering the magnitude of convective storm-triggered landslide events in the Appalachian Plateau, USA. Journal of Geophysical Research: Earth Surface. [Submitted]
 ```
 
 ## License

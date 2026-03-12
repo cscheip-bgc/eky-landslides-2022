@@ -26,7 +26,14 @@ def _nearest_distances(hist: gpd.GeoDataFrame, event: gpd.GeoDataFrame) -> np.nd
 
 def _cumulative_table(distances: np.ndarray, areas: np.ndarray) -> pd.DataFrame:
     """Build cumulative reactivation table with mean/median historical areas"""
-    thresholds = np.array([0, 1, 2, 3, 5, 7, 10, 15, 20, 30, 50, 75, 100, 150, 200, 300, 400, 500, 700, 1000])
+    thresholds = np.array(
+        [0]
+        + list(range(1, 11, 1))       # 1,2,...,10
+        + list(range(12, 21, 2))      # 12,14,16,18,20
+        + list(range(25, 101, 5))     # 25,30,...,100
+        + list(range(120, 201, 20))   # 120,140,160,180,200
+        + list(range(250, 1001, 50))  # 250,300,...,1000
+    )
     total = distances.size
     rows = []
     for d in thresholds:
