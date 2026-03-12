@@ -8,9 +8,6 @@ __pycache__/
 *.ipynb
 
 # Data and outputs
-data/*
-!data/README.md
-!data/eky-gauge-data.csv
 outputs/*
 
 # macOS
