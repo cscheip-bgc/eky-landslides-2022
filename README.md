@@ -1,6 +1,6 @@
-# Reconsidering the magnitude of convective storm-triggered landslide events in the Appalachian Plateau, USA
+# RLidar change detection applied to a convective storm-triggered landslide event in Kentucky, USA highlights limitations of conventional inventories
 
-**Supporting code for the manuscript submitted to _Journal of Geophysical Research: Earth Surface_ by Scheip et al.**
+**Supporting code for the manuscript submitted to _Landslides_ by Scheip et al.**
 
 This repository contains the code to reproduce figures and tables for the above-mentioned manuscript to support open research standards.
 
