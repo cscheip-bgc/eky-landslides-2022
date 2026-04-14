@@ -1,4 +1,4 @@
-# RLidar change detection applied to a convective storm-triggered landslide event in Kentucky, USA highlights limitations of conventional inventories
+# Lidar change detection applied to a convective storm-triggered landslide event in Kentucky, USA highlights limitations of conventional inventories
 
 **Supporting code for the manuscript submitted to _Landslides_ by Scheip et al.**
 
