@@ -20,12 +20,23 @@ This codebase generates figures and tables used in the manuscript from raw raste
 
 ### Software Dependencies
 
-Create the conda environment from the provided `environment.yml`:
+This project uses [uv](https://docs.astral.sh/uv/) for environment and dependency
+management. Install uv (see the [install docs](https://docs.astral.sh/uv/getting-started/installation/)
+for other options):
 
 ```bash
-conda env create -f environment.yml
-conda activate landslide-figures
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
+
+Then create the environment from the repository root:
+
+```bash
+uv sync
+```
+
+This reads `pyproject.toml` and `uv.lock`, downloads Python 3.11 if needed, and
+installs the exact pinned dependency versions into a local `.venv/`. No separate
+activation step is required — prefix commands with `uv run` as shown below.
 
 ### Data Requirements
 
@@ -51,27 +62,31 @@ Edit `config.py` to adjust paths if your data is stored elsewhere. By default, t
 
 ## Usage
 
-Run the analysis scripts in the following order from the `release-artifacts` directory:
+Run the analysis scripts in the following order from the repository root:
 
 ```bash
 # 1. Density maps (event and historical)
-python src/density_maps.py
+uv run python src/density_maps.py
 
 # 2. Aspect frequency analysis
-python src/aspect_frequency.py
+uv run python src/aspect_frequency.py
 
 # 3. Frequency-area distributions
-python src/fad.py
+uv run python src/fad.py
 
 # 4. Area-volume scaling and cumulative erosion
-python src/area_volume.py
+uv run python src/area_volume.py
 
 # 5. Reactivation distance analysis
-python src/reactivation_distance.py
+uv run python src/reactivation_distance.py
 
 # 6. Precipitation analysis and plotting
-python src/precip_plotting.py
+uv run python src/precip_plotting.py
 ```
+
+`uv run` syncs the environment before executing, so `uv sync` is optional if you
+go straight to running a script. All scripts resolve their input and output paths
+through `config.py`, so they can be invoked from any working directory.
 
 ### Expected Outputs
 
@@ -116,9 +131,11 @@ Key parameters are defined in `config.py`:
 ## Code Structure
 
 ```
-release-artifacts/
+eky-landslides-2022/
 ├── config.py              # Configuration and paths
-├── environment.yml        # Conda environment specification
+├── pyproject.toml         # Project metadata and dependencies (uv)
+├── uv.lock                # Pinned dependency versions (uv)
+├── .python-version        # Python version used by uv (3.11)
 ├── README.md             # This file
 ├── data/                 # Place raw data files here (not tracked)
 ├── outputs/              # Generated outputs (not tracked)

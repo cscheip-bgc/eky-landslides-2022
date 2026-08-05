@@ -38,6 +38,9 @@ dod_aligned_file = data_path / "dod_aligned.tif"
 # Precomputed erosion volumes (from raster extraction) -------------------------
 erosion_volumes_csv = data_path / "landslide_erosion_volumes.csv"
 
+# Precipitation gauge records ----------------------------------------------------
+precip_gauge_csv = data_path / "eky-gauge-data.csv"
+
 
 # Analysis parameters ------------------------------------------------------------
 target_crs = "EPSG:32617"

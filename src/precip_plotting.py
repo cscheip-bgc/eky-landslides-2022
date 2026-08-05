@@ -11,22 +11,31 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
+import sys
+
+# Project config
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+import config as cfg
 
 
-def load_precipitation_data(data_path='data/eky-gauge-data.csv'):
+def load_precipitation_data(data_path=None):
     """
     Load precipitation data from CSV file.
-    
+
     Parameters
     ----------
-    data_path : str, optional
-        Path to the precipitation data CSV file
-        
+    data_path : str or Path, optional
+        Path to the precipitation data CSV file (defaults to
+        ``config.precip_gauge_csv``)
+
     Returns
     -------
     pd.DataFrame
         DataFrame containing precipitation data from multiple gauges
     """
+    if data_path is None:
+        data_path = cfg.precip_gauge_csv
+
     # Load data with proper date parsing
     allprecip = pd.read_csv(data_path, parse_dates=['Date'], index_col='Date')
     
@@ -76,17 +85,21 @@ def calculate_rolling_sums(allprecip, window=30):
     return df
 
 
-def plot_full_span_rolling_sum(df, output_path='outputs/figures/Month_AverageFullSpan.png'):
+def plot_full_span_rolling_sum(df, output_path=None):
     """
     Generate full time span 30-day rolling sum precipitation plot.
-    
+
     Parameters
     ----------
     df : pd.DataFrame
         DataFrame with rolling sum calculations
-    output_path : str, optional
-        Output path for the figure
+    output_path : str or Path, optional
+        Output path for the figure (defaults to
+        ``config.figure_path / 'Month_AverageFullSpan.png'``)
     """
+    if output_path is None:
+        output_path = cfg.figure_path / 'Month_AverageFullSpan.png'
+
     plt.figure(figsize=(8.5, 4.8))
     
     plt.plot(df.index, df['MaxRollingSum'], label='Upper', 
@@ -113,11 +126,11 @@ def plot_full_span_rolling_sum(df, output_path='outputs/figures/Month_AverageFul
     print(f"Saved full span plot to {output_path}")
 
 
-def plot_fourday_inset(allprecip, year=2022, months=[6, 7, 8], 
-                        output_path='outputs/figures/FourDay_GaugeInset.png'):
+def plot_fourday_inset(allprecip, year=2022, months=[6, 7, 8],
+                        output_path=None):
     """
     Generate 4-day rolling sum precipitation plot for specified period.
-    
+
     Parameters
     ----------
     allprecip : pd.DataFrame
@@ -126,9 +139,13 @@ def plot_fourday_inset(allprecip, year=2022, months=[6, 7, 8],
         Year to filter (default: 2022)
     months : list, optional
         List of months to include (default: [6, 7, 8] for June-August)
-    output_path : str, optional
-        Output path for the figure
+    output_path : str or Path, optional
+        Output path for the figure (defaults to
+        ``config.figure_path / 'FourDay_GaugeInset.png'``)
     """
+    if output_path is None:
+        output_path = cfg.figure_path / 'FourDay_GaugeInset.png'
+
     df_filtered = allprecip[allprecip.index.year == year]
     df_aroundJuly = df_filtered[df_filtered.index.month.isin(months)]
     df_July = df_aroundJuly.copy()

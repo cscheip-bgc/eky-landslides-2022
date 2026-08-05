@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *.pyc
 
+# Virtual environment (managed by uv; uv.lock IS tracked)
+.venv/
+
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb
