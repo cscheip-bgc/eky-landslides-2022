@@ -287,6 +287,59 @@ def rank_daily_events(allprecip, top_n=20):
     return ranked
 
 
+def count_threshold_exceedances(allprecip, thresholds=(75, 100, 150, 200),
+                                wet_threshold=1.0):
+    """
+    Count days meeting or exceeding fixed daily-rainfall thresholds.
+
+    All thresholds of interest sit far above ``wet_threshold``, so every
+    qualifying day is by definition a wet day; the wet-day set matters only
+    as the denominator for the reported percentages.
+
+    Counts are given two ways: pooled gauge-days (each gauge counted
+    separately, so one widespread storm can contribute up to four) and
+    network-days (a calendar day counts once if any gauge qualifies).
+
+    Parameters
+    ----------
+    allprecip : pd.DataFrame
+        Daily precipitation totals, one column per gauge (mm)
+    thresholds : tuple of float, optional
+        Daily totals (mm) to test, using >= (default: 75, 100, 150, 200)
+    wet_threshold : float, optional
+        Minimum daily total (mm) for a day to count as wet (default: 1.0)
+
+    Returns
+    -------
+    pd.DataFrame
+        One row per threshold with per-gauge counts, pooled gauge-day and
+        network-day counts, percentages of the respective wet-day totals,
+        and network-day frequency per year
+    """
+    max_anywhere = allprecip.max(axis=1)
+    n_years = len(allprecip) / 365.25
+
+    n_wet_pooled = int((allprecip.stack() >= wet_threshold).sum())
+    n_wet_network = int((max_anywhere >= wet_threshold).sum())
+
+    rows = []
+    for t in thresholds:
+        per_gauge = (allprecip >= t).sum()
+        n_pooled = int(per_gauge.sum())
+        n_network = int((max_anywhere >= t).sum())
+
+        row = {'Threshold_mm': t}
+        row.update({f'{g}_days': int(per_gauge[g]) for g in allprecip.columns})
+        row['Pooled_gauge_days'] = n_pooled
+        row['Pct_of_wet_gauge_days'] = round(100 * n_pooled / n_wet_pooled, 3)
+        row['Network_days_any_gauge'] = n_network
+        row['Pct_of_wet_network_days'] = round(100 * n_network / n_wet_network, 3)
+        row['Network_days_per_year'] = round(n_network / n_years, 2)
+        rows.append(row)
+
+    return pd.DataFrame(rows)
+
+
 def report_daily_intensity(allprecip, output_dir=None, top_n=20):
     """
     Compute, print, and save the 1-day rainfall intensity tables.
@@ -312,6 +365,7 @@ def report_daily_intensity(allprecip, output_dir=None, top_n=20):
 
     summary = calculate_daily_intensity_stats(allprecip)
     ranked = rank_daily_events(allprecip, top_n=top_n)
+    exceedance = count_threshold_exceedances(allprecip)
 
     with pd.option_context('display.width', 200,
                            'display.max_columns', None):
@@ -319,15 +373,20 @@ def report_daily_intensity(allprecip, output_dir=None, top_n=20):
         print(summary.to_string(index=False))
         print(f'\nTop {top_n} days by highest single-gauge total (mm)')
         print(ranked.to_string())
+        print('\nDaily threshold exceedances (>= threshold)')
+        print(exceedance.to_string(index=False))
 
     summary_path = output_dir / 'precip_daily_percentiles.csv'
     ranked_path = output_dir / 'precip_daily_top_events.csv'
+    exceedance_path = output_dir / 'precip_daily_exceedances.csv'
     summary.to_csv(summary_path, index=False)
     ranked.to_csv(ranked_path)
+    exceedance.to_csv(exceedance_path, index=False)
     print(f'\nSaved daily percentile summary to {summary_path}')
     print(f'Saved ranked daily events to {ranked_path}')
+    print(f'Saved threshold exceedances to {exceedance_path}')
 
-    return summary, ranked
+    return summary, ranked, exceedance
 
 
 def main():

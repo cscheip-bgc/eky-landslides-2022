@@ -119,6 +119,7 @@ After running all scripts, the `outputs/figures/` directory will contain:
 - `FourDay_GaugeInset.png` - 4-day rolling sum precipitation (June-August 2022)
 - `precip_daily_percentiles.csv` - 1-day total distribution per gauge (90th/95th/99th percentiles over all days and over wet days, plus record daily total)
 - `precip_daily_top_events.csv` - 20 wettest days in the record ranked by highest single-gauge total
+- `precip_daily_exceedances.csv` - counts of days meeting 75/100/150/200 mm daily thresholds, per gauge, pooled, and network-wide
 
 ## Analysis Parameters
 
