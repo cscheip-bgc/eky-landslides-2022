@@ -183,6 +183,153 @@ def plot_fourday_inset(allprecip, year=2022, months=[6, 7, 8],
     print(f"Saved 4-day inset plot to {output_path}")
 
 
+def calculate_daily_intensity_stats(allprecip, percentiles=(90, 95, 99),
+                                    wet_threshold=1.0):
+    """
+    Summarize 1-day (daily) rainfall totals across the gauge network.
+
+    Daily totals are the shortest duration resolvable from these gauge
+    records, and are used to test whether any short-duration, high-intensity
+    storm outside the July 2022 event approached its magnitude.
+
+    Percentiles are reported two ways because the record is ~58% dry days:
+    over all days (dry days included, which pulls low percentiles toward
+    zero) and over wet days only (>= ``wet_threshold``), which is the
+    conventional climatological definition (e.g. ETCCDI R95p/R99p).
+
+    Parameters
+    ----------
+    allprecip : pd.DataFrame
+        Daily precipitation totals, one column per gauge (mm)
+    percentiles : tuple of int, optional
+        Percentiles to report (default: 90th, 95th, 99th)
+    wet_threshold : float, optional
+        Minimum daily total (mm) for a day to count as wet (default: 1.0)
+
+    Returns
+    -------
+    pd.DataFrame
+        One row per gauge, plus a pooled row over all gauge-days and a
+        "max across gauges" row representing the wettest reading anywhere
+        in the network on each day
+    """
+    # Wettest reading anywhere in the network on each day
+    max_anywhere = allprecip.max(axis=1)
+
+    series = {gauge: allprecip[gauge] for gauge in allprecip.columns}
+    # Pool every gauge-day observation into a single distribution
+    series['Pooled (all gauge-days)'] = allprecip.stack()
+    series['Max across gauges (anywhere)'] = max_anywhere
+
+    rows = []
+    for name, s in series.items():
+        wet = s[s >= wet_threshold]
+        row = {
+            'Series': name,
+            'N_obs': int(s.size),
+            f'N_wet_days_ge_{wet_threshold:g}mm': int(wet.size),
+            'Pct_wet_days': round(100 * wet.size / s.size, 1),
+        }
+        for p in percentiles:
+            row[f'P{p}_all_days_mm'] = round(float(s.quantile(p / 100)), 2)
+        for p in percentiles:
+            row[f'P{p}_wet_days_mm'] = round(float(wet.quantile(p / 100)), 2)
+        row['Max_mm'] = round(float(s.max()), 2)
+
+        # Date (and gauge, where meaningful) of the record daily total
+        if name == 'Pooled (all gauge-days)':
+            date, gauge = s.idxmax()
+        elif name == 'Max across gauges (anywhere)':
+            date = s.idxmax()
+            gauge = allprecip.loc[date].idxmax()
+        else:
+            date = s.idxmax()
+            gauge = name
+        row['Max_date'] = pd.Timestamp(date).date().isoformat()
+        row['Max_gauge'] = gauge
+        rows.append(row)
+
+    return pd.DataFrame(rows)
+
+
+def rank_daily_events(allprecip, top_n=20):
+    """
+    Rank individual days by the highest single-gauge total recorded that day.
+
+    Answers the reviewer-facing question directly: if the July 2022 event
+    dominates this ranking, no other short-duration storm in the record
+    delivered comparable daily rainfall.
+
+    Parameters
+    ----------
+    allprecip : pd.DataFrame
+        Daily precipitation totals, one column per gauge (mm)
+    top_n : int, optional
+        Number of ranked days to return (default: 20)
+
+    Returns
+    -------
+    pd.DataFrame
+        Ranked days with each gauge's total, the network maximum, the gauge
+        that recorded it, and the network mean for that day
+    """
+    ranked = allprecip.copy()
+    ranked['Max_anywhere_mm'] = allprecip.max(axis=1)
+    ranked['Max_gauge'] = allprecip.idxmax(axis=1)
+    ranked['Network_mean_mm'] = allprecip.mean(axis=1)
+
+    ranked = ranked.sort_values('Max_anywhere_mm', ascending=False).head(top_n)
+    ranked = ranked.round(2)
+    ranked.insert(0, 'Rank', range(1, len(ranked) + 1))
+    ranked.index = ranked.index.date
+    ranked.index.name = 'Date'
+
+    return ranked
+
+
+def report_daily_intensity(allprecip, output_dir=None, top_n=20):
+    """
+    Compute, print, and save the 1-day rainfall intensity tables.
+
+    Parameters
+    ----------
+    allprecip : pd.DataFrame
+        Daily precipitation totals, one column per gauge (mm)
+    output_dir : str or Path, optional
+        Directory for the CSV tables (defaults to ``config.figure_path``)
+    top_n : int, optional
+        Number of ranked days to save (default: 20)
+
+    Returns
+    -------
+    tuple of pd.DataFrame
+        (summary table, ranked daily events table)
+    """
+    if output_dir is None:
+        output_dir = cfg.figure_path
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    summary = calculate_daily_intensity_stats(allprecip)
+    ranked = rank_daily_events(allprecip, top_n=top_n)
+
+    with pd.option_context('display.width', 200,
+                           'display.max_columns', None):
+        print('\n1-day rainfall totals - distribution summary (mm)')
+        print(summary.to_string(index=False))
+        print(f'\nTop {top_n} days by highest single-gauge total (mm)')
+        print(ranked.to_string())
+
+    summary_path = output_dir / 'precip_daily_percentiles.csv'
+    ranked_path = output_dir / 'precip_daily_top_events.csv'
+    summary.to_csv(summary_path, index=False)
+    ranked.to_csv(ranked_path)
+    print(f'\nSaved daily percentile summary to {summary_path}')
+    print(f'Saved ranked daily events to {ranked_path}')
+
+    return summary, ranked
+
+
 def main():
     """
     Main function to run all precipitation analysis and plotting.
@@ -198,8 +345,11 @@ def main():
     
     print("Generating 4-day rolling sum inset plot...")
     plot_fourday_inset(allprecip, year=2022, months=[6, 7, 8])
-    
-    print("Precipitation analysis complete!")
+
+    print("Summarizing 1-day rainfall totals...")
+    report_daily_intensity(allprecip)
+
+    print("\nPrecipitation analysis complete!")
 
 
 if __name__ == '__main__':
