@@ -50,6 +50,7 @@ Download the following additional datasets and place them in the `data/` subdire
 | `aspect.tif` | DEM-derived aspect raster | [Kentucky from Above](https://kyfromabove.ky.gov) |
 | `m3c2_lcd.tif` | Lidar change detection (LCD) raster (M3C2, Surface-Normal) | [Zenodo Record](https://zenodo.org/uploads/16813914) |
 | `dod_aligned.tif` | Aligned DEM-of-difference raster | [Zenodo Record](https://zenodo.org/uploads/16813914) |
+| `event-area-susceptibility.tif` | Independent landslide susceptibility model covering the mapping area | [Zenodo Record](https://zenodo.org/uploads/16813914) |
 | `landslide_erosion_volumes.csv` | Precomputed M3C2 and DoD erosion volumes with mean slope per landslide | Included in repository |
 | `eky-gauge-data.csv` | Precipitation data for four gauges near mapping area | Included in repository |
 
@@ -82,6 +83,9 @@ uv run python src/reactivation_distance.py
 
 # 6. Precipitation analysis and plotting
 uv run python src/precip_plotting.py
+
+# 7. Susceptibility vs. observed landslide density (tables only, no figure)
+uv run python src/susceptibility_density.py
 ```
 
 `uv run` syncs the environment before executing, so `uv sync` is optional if you
@@ -121,6 +125,11 @@ After running all scripts, the `outputs/figures/` directory will contain:
 - `precip_daily_top_events.csv` - 20 wettest days in the record ranked by highest single-gauge total
 - `precip_daily_exceedances.csv` - counts of days meeting 75/100/150/200 mm daily thresholds, per gauge, pooled, and network-wide
 
+**Susceptibility vs. Landslide Density (no figure):**
+- `susceptibility_density_cells.csv` - per-cell susceptibility and landslide density on the 1-km grid
+- `susceptibility_density_summary.csv` - dispersion statistics and susceptibility-density correlations
+- `susceptibility_by_density_quartile.csv` - mean susceptibility within landslide-density quartiles
+
 ## Analysis Parameters
 
 Key parameters are defined in `config.py`:
@@ -150,7 +159,8 @@ eky-landslides-2022/
     ├── fad.py            # Frequency-area distributions
     ├── area_volume.py    # Volume calculations and scaling
     ├── reactivation_distance.py # Reactivation analysis
-    └── precip_plotting.py # Precipitation analysis and plotting
+    ├── precip_plotting.py # Precipitation analysis and plotting
+    └── susceptibility_density.py # Susceptibility vs. observed density (tables only)
 ```
 
 ## Notes

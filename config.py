@@ -35,6 +35,9 @@ aspect_file = data_path / "aspect.tif"
 lcd_file = data_path / "m3c2_lcd.tif"
 dod_aligned_file = data_path / "dod_aligned.tif"
 
+# Independent landslide susceptibility model ------------------------------------
+susceptibility_file = data_path / "event-area-susceptibility.tif"
+
 # Precomputed erosion volumes (from raster extraction) -------------------------
 erosion_volumes_csv = data_path / "landslide_erosion_volumes.csv"
 
@@ -53,4 +56,10 @@ AREA_MAX = 10000
 
 EROSION_AREA_MIN = 151
 EROSION_AREA_MAX = 4000
+
+# Susceptibility vs. landslide density comparison --------------------------------
+SUSC_CELL_SIZE_M = 1000.0        # primary aggregation cell size
+SUSC_SENSITIVITY_CELL_SIZE_M = 2000.0
+SUSC_MIN_CELL_COVERAGE = 0.90    # drop partially covered edge cells
+SUSC_HIGH_THRESHOLDS = (0.5, 0.6)
 
